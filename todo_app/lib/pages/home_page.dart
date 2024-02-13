@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:todo_app/data/database.dart';
 import 'package:todo_app/util/dialog_box.dart';
 
 import '../util/todo_tile.dart';
@@ -11,26 +13,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
+  final _myBox = Hive.box('mybox');
+  TodoDB db = TodoDB();
   final _controller = TextEditingController();
 
-  List todoList = [
-    ["Make Tutorial", false],
-    ["Do Exercise", false]
-  ];
+  @override
+  void initState() {
+    if (_myBox.get("TODOLIST") == null) {
+      db.createInitialData();
+    } else {
+      db.loadData();
+    }
+
+    super.initState();
+  }
 
   void checkBoxChanged(bool? value, int index) {
     setState(() {
-      todoList[index][1] = !todoList[index][1];
+      db.todoList[index][1] = !db.todoList[index][1];
     });
+    db.updateData();
   }
 
   void saveNewTask() {
     setState(() {
-      todoList.add([ _controller.text, false]);
+      db.todoList.add([ _controller.text, false]);
       _controller.clear();
     });
     Navigator.of(context).pop();
+    db.updateData();
   }
 
   void createNewTask() {
@@ -48,8 +59,9 @@ class _HomePageState extends State<HomePage> {
 
   void deleteTask(int index) {
     setState(() {
-      todoList.removeAt(index);
+      db.todoList.removeAt(index);
     });
+    db.updateData();
   }
 
   @override
@@ -67,11 +79,11 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.yellow[700],
       ),
       body: ListView.builder(
-        itemCount: todoList.length,
+        itemCount: db.todoList.length,
         itemBuilder: (context, index) {
           return ToDoTile(
-            taskName: todoList[index][0],
-            taskCompleted: todoList[index][1],
+            taskName: db.todoList[index][0],
+            taskCompleted: db.todoList[index][1],
             onChanged: (value) => checkBoxChanged(value, index),
             onDelete: (context) => deleteTask(index),
           );
