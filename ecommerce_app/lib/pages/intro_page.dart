@@ -1,4 +1,5 @@
 
+import 'package:ecommerce_app/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 class IntroPage extends StatelessWidget {
@@ -10,6 +11,7 @@ class IntroPage extends StatelessWidget {
       backgroundColor: Colors.grey[300],
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.all(25.0),
@@ -37,6 +39,37 @@ class IntroPage extends StatelessWidget {
                 color: Colors.grey
               ),
               textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 48),
+
+            GestureDetector(
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const HomePage(),
+                  ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey[900],
+                      borderRadius: BorderRadius.circular(12)
+                  ),
+                  padding: const EdgeInsets.all(25),
+                  child: const Center(
+                    child: Text(
+                      'Shop now',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             )
           ],
         ),
