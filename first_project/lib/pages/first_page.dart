@@ -43,12 +43,12 @@ class _FirstPageState extends State<FirstPage> {
 
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label:' Profile',
+            label: 'Profile',
           ),
 
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label:' Settings',
+            label: 'Settings',
           ),
       ],
     ),
