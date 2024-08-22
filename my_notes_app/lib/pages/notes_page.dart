@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:my_notes_app/components/note_tile.dart';
 import 'package:my_notes_app/models/note.dart';
 import 'package:my_notes_app/models/note_database.dart';
 import 'package:provider/provider.dart';
+
+import '../components/drawer.dart';
 
 class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
@@ -23,6 +27,7 @@ class _NotesPageState extends State<NotesPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
         content: TextField(
           controller: textController,
         ),
@@ -49,7 +54,8 @@ class _NotesPageState extends State<NotesPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Update Note"),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        title: const Text("Update Note"),
         content: TextField(controller: textController),
         actions: [
           MaterialButton(
@@ -70,29 +76,54 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
+  void deleteNote(int id) {
+    context.read<NoteDatabase>().deleteNote(id);
+  }
+
   @override
   Widget build(BuildContext context) {
     final noteDatabase = context.watch<NoteDatabase>();
     List<Note> notes = noteDatabase.currentNotes;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Notes")),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       floatingActionButton: FloatingActionButton(
         onPressed: createNote,
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add, color: Theme.of(context).colorScheme.inversePrimary),
       ),
-      body: ListView.builder(
-        itemCount: notes.length,
-        itemBuilder: (context, index) {
-          final note = notes[index];
-          return ListTile(
-            title: Text(note.text),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [],
+      drawer: const MyDrawer(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 25.0),
+            child: Text(
+              "Notes",
+              style: GoogleFonts.dmSerifText(
+                fontSize: 48,
+                color: Theme.of(context).colorScheme.inversePrimary
+              ),
             ),
-          );
-        }
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: notes.length,
+              itemBuilder: (context, index) {
+                final note = notes[index];
+                return NoteTile(
+                  text: note.text,
+                  onEditPressed: () => updateNote(note),
+                  onDeletePressed: () => deleteNote(note.id),
+                );
+              }
+            ),
+          ),
+        ],
       ),
     );
   }
