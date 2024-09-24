@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return MyHeatMap(
-            datasets: datasets,
+            datasets: prepareHeatMapDataset(currentHabits),
             startDate: snapshot.data!
           );
         } else {
@@ -173,6 +173,8 @@ class _HomePageState extends State<HomePage> {
     List<Habit> currentHabits = habitDatabase.currentHabits;
     return ListView.builder(
       itemCount: currentHabits.length,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final habit = currentHabits[index];
         bool isCompletedToday = isHabitCompletedToday(
