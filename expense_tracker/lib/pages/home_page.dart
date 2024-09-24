@@ -48,6 +48,14 @@ class _HomePageState extends State<HomePage> {
       )
     );
   }
+
+  void openDeleteBox() {
+
+  }
+
+  void openEditBox() {
+
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -61,7 +69,11 @@ class _HomePageState extends State<HomePage> {
           itemCount: value.allExpenses.length,
           itemBuilder: (context, index) {
             Expense expense = value.allExpenses[index];
-            return MyListTile(expense: expense);
+            return MyListTile(
+              expense: expense,
+              onDeletePressed: (context) => openDeleteBox,
+              onEditPressed: (context) => openEditBox,
+            );
           }
         ),
       )
