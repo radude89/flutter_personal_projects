@@ -186,6 +186,7 @@ class _HomePageState extends State<HomePage> {
             amountController.text.isNotEmpty) {
           Navigator.pop(context);
           saveNewExpense();
+          refreshGraphData();
           clearControllers();
         }
       },
@@ -212,6 +213,7 @@ class _HomePageState extends State<HomePage> {
           await context
               .read<ExpenseDatabase>()
               .updateExpense(existingId, updatedExpense);
+          refreshGraphData();
         }
       },
       child: const Text('Save'),
@@ -225,6 +227,7 @@ class _HomePageState extends State<HomePage> {
         await context
           .read<ExpenseDatabase>()
           .deleteExpense(id);
+        refreshGraphData();
       },
       child: const Text('Delete'),
     );
