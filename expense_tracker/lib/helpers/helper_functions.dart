@@ -13,3 +13,9 @@ String formatAmount(double amount) {
   );
   return formatter.format(amount);
 }
+
+int calculateMonthCount(int startYear, startMonth, currentYear, currentMonth) {
+  int monthCount =
+      (currentYear - startYear) * 12 + currentMonth - startMonth + 1;
+  return monthCount;
+}

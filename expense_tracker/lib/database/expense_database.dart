@@ -37,4 +37,39 @@ class ExpenseDatabase extends ChangeNotifier {
     await isar.writeTxn(() => isar.expenses.delete(id));
     await readExpenses();
   }
+
+  Future<Map<int, double>> calculateMonthlyTotals() async {
+    await readExpenses();
+    Map<int, double> monthlyTotals = {};
+
+    for (var expense in _allExpenses) {
+      int month = expense.date.month;
+      if (!monthlyTotals.containsKey(month)) {
+        monthlyTotals[month] = 0;
+      }
+      monthlyTotals[month] = monthlyTotals[month]! + expense.amount;
+    }
+
+    return monthlyTotals;
+  }
+
+  int getStartMonth() {
+    if (_allExpenses.isEmpty) {
+      return DateTime.now().month;
+    }
+    _allExpenses.sort(
+        (a, b) => a.date.compareTo(b.date),
+    );
+    return _allExpenses.first.date.month;
+  }
+
+  int getStartYear() {
+    if (_allExpenses.isEmpty) {
+      return DateTime.now().year;
+    }
+    _allExpenses.sort(
+          (a, b) => a.date.compareTo(b.date),
+    );
+    return _allExpenses.first.date.year;
+  }
 }
