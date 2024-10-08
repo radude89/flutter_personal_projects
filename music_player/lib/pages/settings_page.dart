@@ -19,16 +19,24 @@ class _SettingsPageState extends State<SettingsPage> {
         title: const Text("Settings"),
       ),
       body: Container(
-        decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondary,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(25),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text("Dark Mode"),
+            const Text(
+              "Dark Mode",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             CupertinoSwitch(
                 value: themeProvider.isDarkMode,
-                onChanged: (bool? value) =>
-                    setState(() {
-                      themeProvider.toggleTheme();
-                    })
+                onChanged: (bool? value) => setState(() {
+                  themeProvider.toggleTheme();
+                })
             )
           ],
         ),
