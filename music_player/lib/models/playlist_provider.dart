@@ -22,8 +22,13 @@ class PlaylistProvider extends ChangeNotifier {
         audioPath: "assets/audio/lose_yourself.mp3"
     )
   ];
-  int? _currentSongIndex;
 
+  int? _currentSongIndex;
   List<Song> get playlist => _playlist;
   int? get currentSongIndex => _currentSongIndex;
+
+  set currentSongIndex(int? newIndex) {
+    _currentSongIndex = newIndex;
+    notifyListeners();
+  }
 }

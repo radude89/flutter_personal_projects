@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/models/playlist_provider.dart';
-import 'package:music_player/pages/my_drawer.dart';
+import 'package:music_player/components/my_drawer.dart';
+import 'package:music_player/pages/song_page.dart';
 import 'package:provider/provider.dart';
 
 import '../models/song.dart';
@@ -22,7 +23,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void goToSong(int index) {
-    // TODO: implement here 08/10/24
+    playListProvider.currentSongIndex = index;
+    Navigator.push(
+       context,
+        MaterialPageRoute(builder: (context) => const SongPage())
+    );
   }
 
   @override
