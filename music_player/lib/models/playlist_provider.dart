@@ -93,11 +93,14 @@ class PlaylistProvider extends ChangeNotifier {
   }
 
   void playPreviousSong() async {
-    if (_currentDuration.inSeconds <= 2) { return; }
-    if (_currentSongIndex! > 0) {
-      currentSongIndex = _currentSongIndex! - 1;
+    if (_currentDuration.inSeconds < 2) {
+      seek(Duration.zero);
     } else {
-      currentSongIndex = playlist.length - 1;
+      if (_currentSongIndex! > 0) {
+        currentSongIndex = _currentSongIndex! - 1;
+      } else {
+        currentSongIndex = playlist.length - 1;
+      }
     }
   }
 
