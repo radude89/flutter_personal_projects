@@ -17,18 +17,50 @@ class CartPage extends StatelessWidget {
           title: const Text("Cart"),
           backgroundColor: Colors.transparent,
           foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Are you sure you want to clear the cart?'),
+                        actions: [
+                          TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Cancel')
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                restaurant.clearCart();
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Yes')
+                          ),
+                        ],
+                      ),
+                  );
+                },
+                icon: const Icon(Icons.delete)
+            )
+          ],
         ),
         body: Column(
           children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: userCart.length,
-                itemBuilder: (context, index) {
-                  final cartItem = userCart[index];
-                  return MyCartTile(cartItem: cartItem);
-                }
-              ),
-            )
+            userCart.isEmpty
+                ? const Expanded(
+                    child: Center(
+                      child: Text("Cart is empty...")
+                    )
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: userCart.length,
+                      itemBuilder: (context, index) {
+                        final cartItem = userCart[index];
+                        return MyCartTile(cartItem: cartItem);
+                      }
+                    ),
+                )
           ],
         ),
       );
