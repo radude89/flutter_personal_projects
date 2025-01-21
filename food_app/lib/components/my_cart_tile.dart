@@ -55,25 +55,26 @@ class MyCartTile extends StatelessWidget {
                   ],
                 ),
                 QuantitySelector(
-                    quantity: cartItem.quantity,
-                    food: cartItem.food,
-                    onIncrement: () {
-                      restaurant.addToCart(
-                          cartItem.food,
-                          cartItem.selectedAddons
-                      );
-                    },
-                    onDecrement: () {
-                      restaurant.removeFromCart(cartItem);
-                    }
+                  quantity: cartItem.quantity,
+                  food: cartItem.food,
+                  onIncrement: () {
+                    restaurant.addToCart(
+                        cartItem.food,
+                        cartItem.selectedAddons
+                    );
+                  },
+                  onDecrement: () {
+                    restaurant.removeFromCart(cartItem);
+                  }
                 ),
+                const SizedBox(height: 4),
                 SizedBox(
                   height: cartItem.selectedAddons.isEmpty ? 0 : 60,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.only(
                         left: 10,
-                        bottom: 10,
+                        bottom: 4,
                         right: 10
                     ),
                     children: cartItem.selectedAddons
