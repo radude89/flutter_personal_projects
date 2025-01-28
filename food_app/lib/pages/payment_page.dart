@@ -75,7 +75,9 @@ class _PaymentPageState extends State<PaymentPage> {
               cardHolderName: cardHolderName,
               cvvCode: cvvCode,
               showBackView: isCvvFocused,
-              onCreditCardWidgetChange: (p0) {}),
+              onCreditCardWidgetChange: (p0) {}
+          ),
+
           CreditCardForm(
               cardNumber: cardNumber,
               expiryDate: expiryDate,
@@ -91,11 +93,14 @@ class _PaymentPageState extends State<PaymentPage> {
               },
               formKey: formKey
           ),
+
           const Spacer(),
+
           MyButton(
               text: "Pay now",
               onTap: userTappedPay
           ),
+
           const SizedBox(height: 25)
         ],
       ),
