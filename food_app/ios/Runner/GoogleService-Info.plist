@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyDbJ4hw1h0R3rjjU4HC8auOzqt4SOq9LAM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>633232985043</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.foodApp</string>
+	<key>PROJECT_ID</key>
+	<string>flutter-foodapp-10489</string>
+	<key>STORAGE_BUCKET</key>
+	<string>flutter-foodapp-10489.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:633232985043:ios:5178f82cf5e249e51cbd26</string>
+</dict>
+</plist>
