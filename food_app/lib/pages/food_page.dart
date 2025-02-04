@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:food_app/components/my_button.dart';
-import 'package:food_app/main.dart';
 import 'package:provider/provider.dart';
 
 import '../models/food.dart';

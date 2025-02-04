@@ -4,20 +4,21 @@ import 'package:food_app/models/cart_item.dart';
 import 'package:food_app/models/food.dart';
 import 'package:intl/intl.dart';
 
-import 'food.dart';
-
 class Restaurant extends ChangeNotifier {
   List<Food> get menu => _menu;
   List<CartItem> get cart => _cart;
 
   final List<CartItem> _cart = [];
 
+  String _deliveryAddress = '99 Hollywood Blv';
+  String get deliveryAddress => _deliveryAddress;
+
   void addToCart(Food food, List<Addon> selectedAddons) {
     CartItem? cartItem = _cart.firstWhereOrNull((item) {
       bool isSameFood = item.food == food;
       bool isSameAddons = const ListEquality()
           .equals(item.selectedAddons, selectedAddons);
-      return isSameFood && isSameFood;
+      return isSameFood && isSameAddons;
     });
 
     if (cartItem != null) {
@@ -70,6 +71,11 @@ class Restaurant extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateDeliveryAddress(String newAddress) {
+    _deliveryAddress = newAddress;
+    notifyListeners();
+  }
+
   String displayCartReceipt() {
     final receipt = StringBuffer();
 
@@ -97,6 +103,8 @@ class Restaurant extends ChangeNotifier {
     receipt.writeln("Total Items: ${getTotalItemCount()}");
     final totalPrice = _formatPrice(getTotalPrice());
     receipt.writeln("Total Price: $totalPrice");
+    receipt.writeln();
+    receipt.writeln("Delivering to: $deliveryAddress");
 
     return receipt.toString();
   }

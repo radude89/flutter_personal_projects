@@ -1,25 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../models/restaurant.dart';
 
 class MyCurrentLocation extends StatelessWidget {
-  const MyCurrentLocation({super.key});
+  MyCurrentLocation({super.key});
+
+  final textController = TextEditingController();
 
   void openLocationSearchBox(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const  Text("Your location"),
-        content: const TextField(
-          decoration: InputDecoration(
+        content: TextField(
+          controller: textController,
+          decoration: const InputDecoration(
             hintText: "Search address...",
           )
         ),
         actions: [
           MaterialButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              Navigator.pop(context);
+              textController.clear();
+            },
             child: const Text("Cancel"),
           ),
           MaterialButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              String newAddress = textController.text;
+              context.read<Restaurant>().updateDeliveryAddress(newAddress);
+              Navigator.pop(context);
+              textController.clear();
+            },
             child: const Text("Save"),
           ),
         ],
@@ -44,14 +58,20 @@ class MyCurrentLocation extends StatelessWidget {
             onTap: () => openLocationSearchBox(context),
             child: Row(
               children: [
-                Text(
-                  "6901 Hollywood Blvd.",
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                    fontWeight: FontWeight.bold
-                  ),
+                Consumer<Restaurant>(
+                    builder: (context, restaurant, child) =>
+                      Text(
+                        restaurant.deliveryAddress,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.inversePrimary,
+                          fontWeight: FontWeight.bold
+                        ),
+                      )
                 ),
-                const Icon(Icons.keyboard_arrow_down_rounded)
+                Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                )
               ]
             ),
           )
