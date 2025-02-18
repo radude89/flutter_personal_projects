@@ -8,4 +8,7 @@ extension ThemeExtensions on BuildContext {
 
   ThemeData get themeData =>
       Provider.of<ThemeProvider>(this).themeData;
+
+  ThemeProvider get themeProvider =>
+      Provider.of<ThemeProvider>(this, listen: false);
 }
