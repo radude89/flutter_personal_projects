@@ -11,6 +11,14 @@ class DefaultDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: context.colorScheme.surface,
+      child: createDrawerChild(context)
+    );
+  }
+
+  Widget createDrawerChild(BuildContext context) {
+    const padding = EdgeInsets.symmetric(horizontal: 25.0);
+    return Padding(
+      padding: padding,
       child: SafeArea(
         child: Column(
           children: createContent(context),
@@ -23,6 +31,7 @@ class DefaultDrawer extends StatelessWidget {
     List<Widget> content = [
       appLogo(context),
       createDivider(context),
+      createSpacer(10)
     ];
     content.addAll(createTiles(context));
     return content;
@@ -54,10 +63,12 @@ class DefaultDrawer extends StatelessWidget {
 
   Divider createDivider(BuildContext context) {
     return Divider(
-      indent: 25,
-      endIndent: 25,
       color: context.colorScheme.secondary,
     );
+  }
+
+  Widget createSpacer(double height) {
+    return SizedBox(height: height);
   }
 
   Padding appLogo(BuildContext context) {
