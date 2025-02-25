@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:social_app/components/primary_button.dart';
 import 'package:social_app/components/default_textfield.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
 
@@ -31,17 +32,25 @@ class _LoginPageState extends State<LoginPage> {
   );
 
   List<Widget> get contentChildren => [
-    spacer,
+    mediumSpacer,
     lockIcon,
-    spacer,
+    mediumSpacer,
     welcomeText,
-    spacer,
+    mediumSpacer,
     emailField,
-    createCustomSpacer(10),
-    passwordField
+    smallSpacer,
+    passwordField,
+    smallSpacer,
+    forgotPassword,
+    mediumSpacer,
+    primaryButton,
+    largeSpacer,
+    registerRowView
   ];
 
-  Widget get spacer => createCustomSpacer();
+  Widget get smallSpacer => createCustomSpacer(10);
+  Widget get mediumSpacer => createCustomSpacer();
+  Widget get largeSpacer => createCustomSpacer(50);
 
   Widget createCustomSpacer([double height = 25]) {
     return SizedBox(height: height);
@@ -73,5 +82,50 @@ class _LoginPageState extends State<LoginPage> {
     controller: passwordController,
     hintText: "Enter Password",
     obscureText: true
+  );
+
+  Align get forgotPassword => Align(
+    alignment: Alignment.centerRight,
+    child: forgotPasswordText,
+  );
+
+  Text get forgotPasswordText => Text(
+    "Forgot Password?",
+    style: TextStyle(
+      color: context.colorScheme.primary,
+      fontWeight: FontWeight.bold
+    ),
+  );
+
+  PrimaryButton get primaryButton => PrimaryButton(
+      text: "Login",
+      onTap: (){}
+  );
+
+  Row get registerRowView => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      notMemberText,
+      const SizedBox(width: 5),
+      registerNowTextGesture
+    ],
+  );
+
+  GestureDetector get registerNowTextGesture => GestureDetector(
+    onTap: () {},
+    child: Text(
+      "Register now",
+      style: TextStyle(
+          color: context.colorScheme.primary,
+          fontWeight: FontWeight.bold
+      ),
+    )
+  );
+
+  Text get notMemberText => Text(
+    "Not a member?",
+    style: TextStyle(
+        color: context.colorScheme.primary
+    ),
   );
 }
