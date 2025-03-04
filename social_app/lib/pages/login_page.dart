@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:social_app/components/primary_button.dart';
 import 'package:social_app/components/default_textfield.dart';
+import 'package:social_app/services/auth/auth_service.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,6 +20,21 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  final _auth = AuthService();
+
+  void login() async {
+    try {
+      await _auth.loginUser(
+          emailController.text,
+          passwordController.text
+      );
+    } catch(e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
 
   PrimaryButton get primaryButton => PrimaryButton(
       text: "Login",
-      onTap: (){}
+      onTap: login
   );
 
   Row get registerRowView => Row(

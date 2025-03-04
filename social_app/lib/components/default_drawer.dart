@@ -1,11 +1,25 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
 import '../pages/settings_page.dart';
+import '../services/auth/auth_service.dart';
 import 'default_drawer_tile.dart';
 
 class DefaultDrawer extends StatelessWidget {
-  const DefaultDrawer({super.key});
+  DefaultDrawer({super.key});
+
+  final _auth = AuthService();
+
+  void logout() async {
+    try {
+      await _auth.logout();
+    } catch(e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +60,7 @@ class DefaultDrawer extends StatelessWidget {
       createTile("Settings", Icons.settings, () {
         onTapSettings(context);
       }),
+      createTile("Logout", Icons.logout, logout)
     ];
   }
 
