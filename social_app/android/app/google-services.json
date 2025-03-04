@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "192898188186",
+    "project_id": "flutter-social-demoapp",
+    "storage_bucket": "flutter-social-demoapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:192898188186:android:843463fa4138475f097023",
+        "android_client_info": {
+          "package_name": "com.rdan.social_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLbcgYHrs-NEZrT7x7wUs6SuI9zq9_oSI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

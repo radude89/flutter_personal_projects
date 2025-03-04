@@ -4,7 +4,12 @@ import 'package:social_app/components/default_textfield.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final void Function()? onTapRegisterNow;
+
+  const LoginPage({
+    super.key,
+    required this.onTapRegisterNow
+  });
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -63,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
   );
 
   Widget get welcomeText => Text(
-    "Welcome back, you've been missed",
+    "Welcome back, you've been missed!",
     style: defaultTextStyle,
   );
 
@@ -112,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
   );
 
   GestureDetector get registerNowTextGesture => GestureDetector(
-    onTap: () {},
+    onTap: widget.onTapRegisterNow,
     child: Text(
       "Register now",
       style: TextStyle(
