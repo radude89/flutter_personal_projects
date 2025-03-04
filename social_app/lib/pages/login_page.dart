@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:social_app/components/primary_button.dart';
+import 'package:social_app/components/default_login_circle.dart';
 import 'package:social_app/components/default_textfield.dart';
+import 'package:social_app/components/primary_button.dart';
 import 'package:social_app/services/auth/auth_service.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
 
@@ -23,17 +23,33 @@ class _LoginPageState extends State<LoginPage> {
 
   final _auth = AuthService();
 
-  void login() async {
+  void handleLoginAction() async {
+    showLoadingCircle(context);
+    attemptLogin();
+  }
+
+  void attemptLogin() async {
     try {
       await _auth.loginUser(
           emailController.text,
           passwordController.text
       );
+      if (mounted) hideLoadingCircle(context);
     } catch(e) {
-      if (kDebugMode) {
-        print(e.toString());
-      }
+      handleError(e.toString());
     }
+  }
+
+  void handleError(String errorMessage) {
+    if (!mounted) return;
+
+    hideLoadingCircle(context);
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(errorMessage),
+        )
+    );
   }
 
   @override
@@ -121,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
 
   PrimaryButton get primaryButton => PrimaryButton(
       text: "Login",
-      onTap: login
+      onTap: handleLoginAction
   );
 
   Row get registerRowView => Row(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
 
+import '../components/default_login_circle.dart';
 import '../components/default_textfield.dart';
 import '../components/primary_button.dart';
+import '../services/auth/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   final void Function()? onTapLoginNow;
@@ -21,6 +23,49 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
+
+  final _auth = AuthService();
+
+  void handleRegisterAction() async {
+    if (!passwordsMatch()) {
+      displayAlertMessage("Passwords do not match.");
+      return;
+    }
+
+    showLoadingCircle(context);
+    attemptRegister();
+  }
+
+  bool passwordsMatch() {
+    return passwordController.text == confirmPasswordController.text;
+  }
+
+  void attemptRegister() async {
+    try {
+      await _auth.registerUser(
+          emailController.text,
+          passwordController.text
+      );
+      if (mounted) hideLoadingCircle(context);
+    } catch(e) {
+      handleError(e.toString());
+    }
+  }
+
+  void handleError(String errorMessage) {
+    if (!mounted) return;
+    hideLoadingCircle(context);
+    displayAlertMessage(errorMessage);
+  }
+
+  void displayAlertMessage(String message) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(message),
+        )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +153,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   PrimaryButton get primaryButton => PrimaryButton(
       text: "Register",
-      onTap: (){}
+      onTap: handleRegisterAction
   );
 
   Row get loginRowView => Row(

@@ -60,7 +60,9 @@ class DefaultDrawer extends StatelessWidget {
       createTile("Settings", Icons.settings, () {
         onTapSettings(context);
       }),
-      createTile("Logout", Icons.logout, logout)
+      const Spacer(),
+      createTile("Logout", Icons.logout, logout),
+      SizedBox(height: 25)
     ];
   }
 
