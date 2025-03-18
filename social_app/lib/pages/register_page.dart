@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:social_app/services/database/database_service.dart';
+import 'package:social_app/services/database/database_service_users.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
 
 import '../components/default_login_circle.dart';
@@ -25,6 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController confirmPasswordController = TextEditingController();
 
   final _auth = AuthService();
+  final _db = DatabaseService();
 
   void handleRegisterAction() async {
     if (!passwordsMatch()) {
@@ -47,6 +50,10 @@ class _RegisterPageState extends State<RegisterPage> {
           passwordController.text
       );
       if (mounted) hideLoadingCircle(context);
+      await _db.saveUserInfoFirebase(
+        name: nameController.text,
+        email: emailController.text
+      );
     } catch(e) {
       handleError(e.toString());
     }
