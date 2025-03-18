@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
+import '../pages/profile_page.dart';
 import '../pages/settings_page.dart';
 import '../services/auth/auth_service.dart';
 import 'default_drawer_tile.dart';
@@ -52,17 +53,27 @@ class DefaultDrawer extends StatelessWidget {
   }
 
   List<Widget> createTiles(BuildContext context) {
+    List<Widget> allTiles = [];
+    allTiles.addAll(createMainTiles(context));
+    allTiles.addAll([
+        const Spacer(),
+        createTile("Logout", Icons.logout, logout),
+        SizedBox(height: 25)
+    ]);
+    return allTiles;
+  }
+
+  List<Widget> createMainTiles(BuildContext context) {
     return [
       createTile("Home", Icons.home, () {
         pop(context);
       }),
-      createTile("Profile", Icons.person, (){}),
+      createTile("Profile", Icons.person, () {
+        onTapProfile(context);
+      }),
       createTile("Settings", Icons.settings, () {
         onTapSettings(context);
       }),
-      const Spacer(),
-      createTile("Logout", Icons.logout, logout),
-      SizedBox(height: 25)
     ];
   }
 
@@ -120,6 +131,14 @@ extension DrawerExtensions on DefaultDrawer {
   void onTapSettings(BuildContext context) {
     pop(context);
     push(const SettingsPage(), context);
+  }
+
+  void onTapProfile(BuildContext context) {
+    pop(context);
+    push(
+        ProfilePage(uid: _auth.getCurrentUid()),
+        context
+    );
   }
 }
 // endregion

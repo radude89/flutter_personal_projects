@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
   );
 
   Widget get welcomeText => Text(
-    "Welcome back, you've been missed!",
+    "Welcome back!",
     style: defaultTextStyle,
   );
 
