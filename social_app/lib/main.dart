@@ -1,9 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:social_app/services/auth/auth_gate.dart';
-import 'package:social_app/themes/theme_provider.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
+import 'package:social_app/utils/main_app_provider_holder.dart';
 
 import 'firebase_options.dart';
 
@@ -14,10 +13,7 @@ void main() async {
   );
 
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
-      child: const MyApp(),
-    )
+      MainAppProviderHolder().provider
   );
 }
 
