@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:social_app/components/bio_box.dart';
 import 'package:social_app/components/default_drawer.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/services/auth/auth_service.dart';
@@ -56,7 +57,8 @@ class _ProfilePageState extends State<ProfilePage> {
       children: [
         buildUsernameView(context),
         const SizedBox(height: 25),
-        buildProfileView(context)
+        buildProfileView(context),
+        BioBox(text: _isLoading ? '...' : user!.bio),
       ],
     );
   }
