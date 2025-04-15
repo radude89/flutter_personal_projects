@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:social_app/components/alert_box.dart';
 import 'package:social_app/components/bio_box.dart';
-import 'package:social_app/components/default_drawer.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/services/auth/auth_service.dart';
 import 'package:social_app/services/database/database_provider.dart';
@@ -26,6 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
   UserProfile? user;
   String currentUserId = AuthService().getCurrentUid();
   bool _isLoading = true;
+  final bioTextController = TextEditingController();
 
   @override
   void initState() {
@@ -40,6 +41,29 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  void _showEditBioBox() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertBox(
+        textController: bioTextController,
+        hintText: "Edit bio",
+        onPressed: saveBio,
+        onPressedText: "Save"
+      )
+    );
+  }
+
+  Future<void> saveBio() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await databaseProvider.updateBio(bioTextController.text);
+    await loadUser();
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +72,10 @@ class _ProfilePageState extends State<ProfilePage> {
         title: Text(_isLoading ? '' : user!.name),
         foregroundColor: context.colorScheme.primary,
       ),
-      body: buildListView(context),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+        child: buildListView(context),
+      ),
     );
   }
 
@@ -58,9 +85,32 @@ class _ProfilePageState extends State<ProfilePage> {
         buildUsernameView(context),
         const SizedBox(height: 25),
         buildProfileView(context),
+        buildEditBioBoxView(context),
+        const SizedBox(height: 10),
         BioBox(text: _isLoading ? '...' : user!.bio),
       ],
     );
+  }
+
+  Row buildEditBioBoxView(BuildContext context) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Bio",
+            style: TextStyle(
+              color: context.colorScheme.primary
+            ),
+          ),
+          GestureDetector(
+            onTap: _showEditBioBox,
+            child: Icon(
+              Icons.settings,
+              color: context.colorScheme.primary,
+            ),
+          ),
+        ],
+      );
   }
 
   Center buildProfileView(BuildContext context) {
