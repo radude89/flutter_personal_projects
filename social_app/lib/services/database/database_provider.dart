@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:social_app/models/post.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/services/database/database_service.dart';
+import 'package:social_app/services/database/database_service_posts.dart';
 import 'package:social_app/services/database/database_service_update_bio.dart';
 import 'package:social_app/services/database/database_service_users.dart';
 
@@ -12,4 +14,13 @@ class DatabaseProvider extends ChangeNotifier {
 
   Future<void> updateBio(String bio) =>
       _db.updateUserBioInFirebase(bio);
+
+  List<Post> _allPosts = [];
+
+  List<Post> get allPosts => _allPosts;
+
+  Future<void> postMessage(String message) async {
+    await _db.postMessageInFirebase(message);
+
+  }
 }

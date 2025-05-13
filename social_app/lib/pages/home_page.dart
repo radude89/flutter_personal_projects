@@ -10,6 +10,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  void openPostMessageBox() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("New Post"),
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,6 +28,10 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("Home"),
         foregroundColor: context.colorScheme.primary,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: openPostMessageBox,
+        child: const Icon(Icons.add),
       ),
     );
   }

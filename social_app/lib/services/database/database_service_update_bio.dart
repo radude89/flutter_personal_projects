@@ -5,7 +5,7 @@ import 'database_service.dart';
 
 extension DatabaseServiceExtension on DatabaseService {
   Future<void> updateUserBioInFirebase(String bio) async {
-    String uid = AuthService().getCurrentUid();
+    String uid = auth.currentUser!.uid;
     try {
       await db.collection("Users").doc(uid).update({
         "bio": bio,
