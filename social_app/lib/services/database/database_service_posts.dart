@@ -29,4 +29,21 @@ extension DatabaseServiceExtension on DatabaseService {
       }
     }
   }
+
+  Future<List<Post>> getAllPostsFromFirebase() async {
+    try {
+      QuerySnapshot snapshot = await db
+          .collection("Posts")
+          .orderBy('timestamp', descending: true)
+          .get();
+      return snapshot.docs.map(
+        (doc) => Post.fromDocument(doc)
+      ).toList();
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return [];
+    }
+  }
 }
