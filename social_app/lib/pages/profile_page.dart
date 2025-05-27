@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:social_app/components/alert_box.dart';
 import 'package:social_app/components/bio_box.dart';
+import 'package:social_app/components/post_tile.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/services/auth/auth_service.dart';
 import 'package:social_app/services/database/database_provider.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
+
+import '../models/post.dart';
 
 class ProfilePage extends StatefulWidget {
   final String uid;
@@ -22,6 +25,9 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   late final databaseProvider =
     Provider.of<DatabaseProvider>(context, listen: false);
+
+  late final listeningProvider =
+    Provider.of<DatabaseProvider>(context, listen: true);
 
   UserProfile? user;
   String currentUserId = AuthService().getCurrentUid();
@@ -66,20 +72,21 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final posts = listeningProvider.filterUserPosts(widget.uid);
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
       appBar: AppBar(
         title: Text(_isLoading ? '' : user!.name),
         foregroundColor: context.colorScheme.primary,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25.0),
-        child: buildListView(context),
-      ),
+      body: buildListView(context, posts),
     );
   }
 
-  ListView buildListView(BuildContext context) {
+  ListView buildListView(
+      BuildContext context,
+      List<Post> posts
+  ) {
     return ListView(
       children: [
         buildUsernameView(context),
@@ -88,29 +95,80 @@ class _ProfilePageState extends State<ProfilePage> {
         buildEditBioBoxView(context),
         const SizedBox(height: 10),
         BioBox(text: _isLoading ? '...' : user!.bio),
+        buildPostsSectionTitle(context),
+        buildPostList(posts)
       ],
     );
   }
 
-  Row buildEditBioBoxView(BuildContext context) {
+  Widget buildPostsSectionTitle(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 25, top: 25, bottom: 5),
+      child: Text(
+        "Posts",
+        style: TextStyle(
+          color: context.colorScheme.primary
+        )
+      ),
+    );
+  }
+
+  Widget buildPostList(List<Post> posts) {
+    return posts.isEmpty
+        ? buildEmptyPostView()
+        : buildPostListContent(posts);
+  }
+
+  ListView buildPostListContent(List<Post> posts) {
+    return ListView.builder(
+      itemCount: posts.length,
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        final post = posts[index];
+        return PostTile(post: post);
+      },
+    );
+  }
+
+  Center buildEmptyPostView() => const Center(
+    child: Text("No posts yet...")
+  );
+
+  Widget buildEditBioBoxView(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      child: buildEditBioBoxContent(context),
+    );
+  }
+
+  Row buildEditBioBoxContent(BuildContext context) {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            "Bio",
-            style: TextStyle(
-              color: context.colorScheme.primary
-            ),
-          ),
-          GestureDetector(
-            onTap: _showEditBioBox,
-            child: Icon(
-              Icons.settings,
-              color: context.colorScheme.primary,
-            ),
-          ),
+          buildBioBoxTitle(context),
+          buildBioBoxGestureDetector(context),
         ],
       );
+  }
+
+  GestureDetector buildBioBoxGestureDetector(BuildContext context) {
+    return GestureDetector(
+          onTap: _showEditBioBox,
+          child: Icon(
+            Icons.settings,
+            color: context.colorScheme.primary,
+          ),
+        );
+  }
+
+  Text buildBioBoxTitle(BuildContext context) {
+    return Text(
+          "Bio",
+          style: TextStyle(
+            color: context.colorScheme.primary
+          ),
+        );
   }
 
   Center buildProfileView(BuildContext context) {
