@@ -5,7 +5,15 @@ import '../models/post.dart';
 
 class PostTile extends StatefulWidget {
   final Post post;
-  const PostTile({super.key, required this.post});
+  final void Function()? onUserTap;
+  final void Function()? onPostTap;
+
+  const PostTile({
+    super.key,
+    required this.post,
+    required this.onUserTap,
+    required this.onPostTap,
+  });
 
   @override
   State<PostTile> createState() => _PostTileState();
@@ -14,14 +22,17 @@ class PostTile extends StatefulWidget {
 class _PostTileState extends State<PostTile> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 25,
-        vertical: 5
+    return GestureDetector(
+      onTap: widget.onPostTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(
+          horizontal: 25,
+          vertical: 5
+        ),
+        padding: const EdgeInsets.all(20),
+        decoration: buildBoxDecoration(context),
+        child: buildContent(context),
       ),
-      padding: const EdgeInsets.all(20),
-      decoration: buildBoxDecoration(context),
-      child: buildContent(context),
     );
   }
 
@@ -52,15 +63,18 @@ class _PostTileState extends State<PostTile> {
       );
   }
 
-  Row buildTopSection(BuildContext context) {
-    return Row(
-      children: [
-        buildIcon(context),
-        const SizedBox(width: 10),
-        buildPostName(context),
-        const SizedBox(width: 5),
-        buildPostUsername(context)
-      ],
+  Widget buildTopSection(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onUserTap,
+      child: Row(
+        children: [
+          buildIcon(context),
+          const SizedBox(width: 10),
+          buildPostName(context),
+          const SizedBox(width: 5),
+          buildPostUsername(context)
+        ],
+      ),
     );
   }
 

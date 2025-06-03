@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:social_app/components/alert_box.dart';
 import 'package:social_app/components/default_drawer.dart';
 import 'package:social_app/components/post_tile.dart';
+import 'package:social_app/helpers/navigate_pages.dart';
 import 'package:social_app/services/database/database_provider.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
 
@@ -80,7 +81,11 @@ class _HomePageState extends State<HomePage> {
     itemCount: posts.length,
     itemBuilder: (context, index) {
       final post = posts[index];
-      return PostTile(post: post);
+      return PostTile(
+        post: post,
+        onUserTap: () => goToUserPage(context, post.uid),
+        onPostTap: () => goToPostsPage(context, post),
+      );
     },
   );
   }

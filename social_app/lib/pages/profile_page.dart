@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:social_app/components/alert_box.dart';
 import 'package:social_app/components/bio_box.dart';
 import 'package:social_app/components/post_tile.dart';
+import 'package:social_app/helpers/navigate_pages.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/services/auth/auth_service.dart';
 import 'package:social_app/services/database/database_provider.dart';
@@ -126,7 +127,11 @@ class _ProfilePageState extends State<ProfilePage> {
       shrinkWrap: true,
       itemBuilder: (context, index) {
         final post = posts[index];
-        return PostTile(post: post);
+        return PostTile(
+          post: post,
+          onUserTap: () => {}, // We are already on the user's profile
+          onPostTap: () => goToPostsPage(context, post),
+        );
       },
     );
   }
