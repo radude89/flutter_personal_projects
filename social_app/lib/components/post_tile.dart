@@ -20,11 +20,15 @@ class _PostTileState extends State<PostTile> {
         vertical: 5
       ),
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: context.colorScheme.secondary,
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: buildBoxDecoration(context),
       child: buildContent(context),
+    );
+  }
+
+  BoxDecoration buildBoxDecoration(BuildContext context) {
+    return BoxDecoration(
+      color: context.colorScheme.secondary,
+      borderRadius: BorderRadius.circular(8),
     );
   }
 
