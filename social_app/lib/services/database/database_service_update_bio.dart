@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:social_app/services/auth/auth_service.dart';
 
 import 'database_service.dart';
 
