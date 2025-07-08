@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:social_app/services/auth/auth_service.dart';
+import 'package:social_app/services/database/database_provider.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
 
 import '../models/post.dart';
@@ -20,6 +23,10 @@ class PostTile extends StatefulWidget {
 }
 
 class _PostTileState extends State<PostTile> {
+  late final listeningProvider = Provider.of<DatabaseProvider>(context);
+  late final databaseProvider = Provider
+      .of<DatabaseProvider>(context, listen: false);
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -72,9 +79,90 @@ class _PostTileState extends State<PostTile> {
           const SizedBox(width: 10),
           buildPostName(context),
           const SizedBox(width: 5),
-          buildPostUsername(context)
+          buildPostUsername(context),
+          const Spacer(),
+          buildMoreButtonView()
         ],
       ),
+    );
+  }
+
+  GestureDetector buildMoreButtonView() {
+    return GestureDetector(
+          onTap: () => showOptions(),
+          child: Icon(
+            Icons.more_horiz,
+            color: context.colorScheme.primary,
+          )
+        );
+  }
+
+  void showOptions() {
+    String currentUid = AuthService().getCurrentUid();
+    final bool isOwnPost = widget.post.uid == currentUid;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return bottomSheetContent(isOwnPost);
+      }
+    );
+  }
+
+  SafeArea bottomSheetContent(bool isOwnPost) {
+    return SafeArea(
+        child: Wrap(
+          children: [
+            if (isOwnPost)
+              deleteTile()
+            else ...[
+              reportTile(),
+              blockTile(),
+            ],
+            cancelTile()
+          ],
+        ),
+      );
+  }
+
+  ListTile blockTile() {
+    return ListTile(
+      leading: const Icon(Icons.block),
+      title: const Text("Block User"),
+      onTap: () {
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  ListTile reportTile() {
+    return ListTile(
+      leading: const Icon(Icons.flag),
+      title: const Text("Report"),
+      onTap: () {
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  ListTile cancelTile() {
+    return ListTile(
+      leading: const Icon(Icons.cancel),
+      title: const Text("Cancel"),
+      onTap: () {
+        Navigator.pop(context);
+      },
+    );
+}
+
+  ListTile deleteTile() {
+    return ListTile(
+      leading: const Icon(Icons.delete),
+      title: const Text("Delete"),
+      onTap: () async {
+        Navigator.pop(context);
+        await databaseProvider.deletePost(widget.post.id);
+      },
     );
   }
 
