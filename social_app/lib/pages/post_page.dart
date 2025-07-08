@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:social_app/components/post_tile.dart';
+import 'package:social_app/helpers/navigate_pages.dart';
+import 'package:social_app/utils/context_theme_ext.dart';
 
 import '../models/post.dart';
 
@@ -18,9 +21,23 @@ class _PostPageState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.colorScheme.surface,
       appBar: AppBar(
-        title: Text(widget.post.message),
+        foregroundColor: context.colorScheme.primary,
       ),
+      body: buildListView(context),
+    );
+  }
+
+  ListView buildListView(BuildContext context) {
+    return ListView(
+      children: [
+        PostTile(
+          post: widget.post,
+          onUserTap: () => goToUserPage(context, widget.post.uid),
+          onPostTap: () {},
+        )
+      ],
     );
   }
 }
