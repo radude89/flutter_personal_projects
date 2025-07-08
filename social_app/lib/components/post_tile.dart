@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:social_app/services/auth/auth_service.dart';
@@ -29,6 +30,10 @@ class _PostTileState extends State<PostTile> {
 
   @override
   Widget build(BuildContext context) {
+    bool likedByCurrentUser = listeningProvider
+        .isPostLikedByCurrentUser(widget.post.id);
+    int likeCount = listeningProvider.getLikeCount(widget.post.id);
+
     return GestureDetector(
       onTap: widget.onPostTap,
       child: Container(
@@ -38,7 +43,7 @@ class _PostTileState extends State<PostTile> {
         ),
         padding: const EdgeInsets.all(20),
         decoration: buildBoxDecoration(context),
-        child: buildContent(context),
+        child: buildContent(context, likedByCurrentUser, likeCount),
       ),
     );
   }
@@ -50,15 +55,44 @@ class _PostTileState extends State<PostTile> {
     );
   }
 
-  Column buildContent(BuildContext context) {
+  Column buildContent(
+    BuildContext context,
+    bool likedByCurrentUser,
+    int likeCount
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildTopSection(context),
         const SizedBox(height: 20),
-        buildPostMessageContent(context)
+        buildPostMessageContent(context),
+        const SizedBox(height: 20),
+        buildLikePostContent(likedByCurrentUser, likeCount)
       ],
     );
+  }
+
+  Widget buildLikePostContent(bool likedByCurrentUser, int likeCount) {
+    return Row(
+        children: [
+          GestureDetector(
+            onTap: toggleLikePost,
+            child: likedByCurrentUser ?
+              Icon(Icons.favorite, color: Colors.red,) :
+              Icon(Icons.favorite_border, color: context.colorScheme.primary),
+          ),
+          Text(likeCount.toString())
+      ]);
+  }
+
+  void toggleLikePost() async {
+    try {
+      await databaseProvider.toggleLike(widget.post.id);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
   }
 
   Text buildPostMessageContent(BuildContext context) {
@@ -89,12 +123,12 @@ class _PostTileState extends State<PostTile> {
 
   GestureDetector buildMoreButtonView() {
     return GestureDetector(
-          onTap: () => showOptions(),
-          child: Icon(
-            Icons.more_horiz,
-            color: context.colorScheme.primary,
-          )
-        );
+      onTap: () => showOptions(),
+      child: Icon(
+        Icons.more_horiz,
+        color: context.colorScheme.primary,
+      )
+    );
   }
 
   void showOptions() {
