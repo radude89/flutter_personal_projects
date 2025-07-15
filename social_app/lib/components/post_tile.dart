@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:social_app/components/alert_box.dart';
 import 'package:social_app/services/auth/auth_service.dart';
 import 'package:social_app/services/database/database_provider.dart';
 import 'package:social_app/utils/context_theme_ext.dart';
@@ -29,10 +30,19 @@ class _PostTileState extends State<PostTile> {
       .of<DatabaseProvider>(context, listen: false);
 
   @override
+  void initState() {
+    super.initState();
+    loadComments();
+  }
+
+  @override
   Widget build(BuildContext context) {
     bool likedByCurrentUser = listeningProvider
         .isPostLikedByCurrentUser(widget.post.id);
-    int likeCount = listeningProvider.getLikeCount(widget.post.id);
+    int likeCount = listeningProvider
+        .getLikeCount(widget.post.id);
+    int commentsCount = listeningProvider
+        .getComments(widget.post.id).length;
 
     return GestureDetector(
       onTap: widget.onPostTap,
@@ -43,7 +53,12 @@ class _PostTileState extends State<PostTile> {
         ),
         padding: const EdgeInsets.all(20),
         decoration: buildBoxDecoration(context),
-        child: buildContent(context, likedByCurrentUser, likeCount),
+        child: buildContent(
+          context,
+          likedByCurrentUser,
+          likeCount,
+          commentsCount
+        ),
       ),
     );
   }
@@ -58,7 +73,8 @@ class _PostTileState extends State<PostTile> {
   Column buildContent(
     BuildContext context,
     bool likedByCurrentUser,
-    int likeCount
+    int likeCount,
+    int commentsCount
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,26 +83,57 @@ class _PostTileState extends State<PostTile> {
         const SizedBox(height: 20),
         buildPostMessageContent(context),
         const SizedBox(height: 20),
-        buildLikePostContent(likedByCurrentUser, likeCount)
+        buildLikePostContent(likedByCurrentUser, likeCount, commentsCount),
       ],
     );
   }
 
-  Widget buildLikePostContent(bool likedByCurrentUser, int likeCount) {
+  Widget buildLikePostContent(
+    bool likedByCurrentUser,
+    int likeCount,
+    int commentsCount
+  ) {
     return Row(
-        children: [
-          GestureDetector(
-            onTap: toggleLikePost,
-            child: likedByCurrentUser ?
+      children: [
+        likeSection(likedByCurrentUser, likeCount),
+        commentsSection(commentsCount),
+      ],
+    );
+  }
+    Widget likeSection(
+        bool likedByCurrentUser,
+        int likeCount
+    ) {
+      return SizedBox(
+          width: 60,
+          child: Row(children: [
+            GestureDetector(
+              onTap: toggleLikePost,
+              child: likedByCurrentUser ?
               Icon(Icons.favorite, color: Colors.red,) :
               Icon(Icons.favorite_border, color: context.colorScheme.primary),
-          ),
-          const SizedBox(width: 5),
-          Text(
-            likeCount != 0 ? likeCount.toString() : '',
-            style: TextStyle(color: context.colorScheme.primary)
-          )
-      ]);
+            ),
+            const SizedBox(width: 5),
+            Text(
+                likeCount != 0 ? likeCount.toString() : '',
+                style: TextStyle(color: context.colorScheme.primary)
+            )
+          ])
+      );
+  }
+
+  Widget commentsSection(int commentsCount) {
+    return Row(children: [
+      GestureDetector(
+        onTap: openNewCommentBox,
+        child: Icon(Icons.comment, color: context.colorScheme.primary)
+      ),
+      const SizedBox(width: 5),
+      Text(
+        commentsCount != 0 ? commentsCount.toString() : '',
+        style: TextStyle(color: context.colorScheme.primary)
+      )
+    ]);
   }
 
   void toggleLikePost() async {
@@ -99,13 +146,46 @@ class _PostTileState extends State<PostTile> {
     }
   }
 
+  final commentController = TextEditingController();
+
+  void openNewCommentBox() async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertBox(
+        textController: commentController,
+        hintText: "Type a comment...",
+        onPressed: () async {
+          await addComment();
+        },
+        onPressedText: "Post"
+      )
+    );
+  }
+
+  Future<void> addComment() async {
+    if (commentController.text.trim().isEmpty) return;
+    try {
+      await databaseProvider
+          .addComment(widget.post.id, commentController.text.trim());
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+    }
+  }
+
+  Future<void> loadComments() async {
+    await databaseProvider.loadComments(widget.post.id);
+
+  }
+
   Text buildPostMessageContent(BuildContext context) {
     return Text(
-        widget.post.message,
-        style: TextStyle(
+      widget.post.message,
+      style: TextStyle(
           color: context.colorScheme.inversePrimary
-        ),
-      );
+      ),
+    );
   }
 
   Widget buildTopSection(BuildContext context) {
@@ -127,11 +207,11 @@ class _PostTileState extends State<PostTile> {
 
   GestureDetector buildMoreButtonView() {
     return GestureDetector(
-      onTap: () => showOptions(),
-      child: Icon(
-        Icons.more_horiz,
-        color: context.colorScheme.primary,
-      )
+        onTap: () => showOptions(),
+        child: Icon(
+          Icons.more_horiz,
+          color: context.colorScheme.primary,
+        )
     );
   }
 
@@ -140,27 +220,27 @@ class _PostTileState extends State<PostTile> {
     final bool isOwnPost = widget.post.uid == currentUid;
 
     showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return bottomSheetContent(isOwnPost);
-      }
+        context: context,
+        builder: (context) {
+          return bottomSheetContent(isOwnPost);
+        }
     );
   }
 
   SafeArea bottomSheetContent(bool isOwnPost) {
     return SafeArea(
-        child: Wrap(
-          children: [
-            if (isOwnPost)
-              deleteTile()
-            else ...[
-              reportTile(),
-              blockTile(),
-            ],
-            cancelTile()
+      child: Wrap(
+        children: [
+          if (isOwnPost)
+            deleteTile()
+          else ...[
+            reportTile(),
+            blockTile(),
           ],
-        ),
-      );
+          cancelTile()
+        ],
+      ),
+    );
   }
 
   ListTile blockTile() {
@@ -191,7 +271,7 @@ class _PostTileState extends State<PostTile> {
         Navigator.pop(context);
       },
     );
-}
+  }
 
   ListTile deleteTile() {
     return ListTile(
@@ -206,27 +286,27 @@ class _PostTileState extends State<PostTile> {
 
   Text buildPostUsername(BuildContext context) {
     return Text(
-        '@${widget.post.username}',
-        style: TextStyle(
+      '@${widget.post.username}',
+      style: TextStyle(
           color: context.colorScheme.primary
-        ),
-      );
+      ),
+    );
   }
 
   Text buildPostName(BuildContext context) {
     return Text(
-        widget.post.name,
-        style: TextStyle(
+      widget.post.name,
+      style: TextStyle(
           color: context.colorScheme.primary,
           fontWeight: FontWeight.bold
-        ),
-      );
+      ),
+    );
   }
 
   Icon buildIcon(BuildContext context) {
     return Icon(
-        Icons.person,
-        color: context.colorScheme.primary,
-      );
+      Icons.person,
+      color: context.colorScheme.primary,
+    );
   }
 }

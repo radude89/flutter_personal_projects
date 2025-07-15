@@ -46,7 +46,7 @@ extension DatabaseServiceExtension on DatabaseService {
     try {
       QuerySnapshot snapshot = await db
           .collection("Comments")
-          .where("PostId", isEqualTo: postId)
+          .where("postId", isEqualTo: postId)
           .get();
       return snapshot.docs.map((doc) => Comment.fromDocument(doc)).toList();
     } catch (error) {
