@@ -4,9 +4,12 @@ import 'package:social_app/models/post.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/services/auth/auth_service.dart';
 import 'package:social_app/services/database/database_service.dart';
+import 'package:social_app/services/database/database_service_comments.dart';
 import 'package:social_app/services/database/database_service_posts.dart';
 import 'package:social_app/services/database/database_service_update_bio.dart';
 import 'package:social_app/services/database/database_service_users.dart';
+
+import '../../models/comment.dart';
 
 class DatabaseProvider extends ChangeNotifier {
   final _db = DatabaseService();
@@ -49,6 +52,7 @@ class DatabaseProvider extends ChangeNotifier {
 
   void initializeLikeMap() {
     final currentUserID = _auth.getCurrentUid();
+    _likedPosts.clear();
     for (var post in _allPosts) {
       _likeCounts[post.id] = post.likeCount;
       if (post.likedBy.contains(currentUserID)) {
@@ -78,4 +82,24 @@ class DatabaseProvider extends ChangeNotifier {
       }
     }
   }
+
+  final Map<String, List<Comment>> _comments = {};
+  List<Comment> getComments(String postId) => _comments[postId] ?? [];
+
+  Future<void> loadComments(String postId) async {
+    final allComments = await _db.getCommentsFromFirebase(postId);
+    _comments[postId] = allComments;
+    notifyListeners();
+  }
+
+  Future<void> addComment(String postId, message) async {
+    await _db.addCommentInFirebase(postId, message);
+    await loadComments(postId);
+  }
+
+  Future<void> deleteComment(String commentId, postId) async {
+    await _db.deleteCommentInFirebase(commentId);
+    await loadComments(postId);
+  }
+
 }

@@ -81,7 +81,11 @@ class _PostTileState extends State<PostTile> {
               Icon(Icons.favorite, color: Colors.red,) :
               Icon(Icons.favorite_border, color: context.colorScheme.primary),
           ),
-          Text(likeCount.toString())
+          const SizedBox(width: 5),
+          Text(
+            likeCount != 0 ? likeCount.toString() : '',
+            style: TextStyle(color: context.colorScheme.primary)
+          )
       ]);
   }
 
